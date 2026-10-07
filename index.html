@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Official">
+<meta name="theme-color" content="#0F2E22">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>Official Contacts — MA&UD, Government of Andhra Pradesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#F6F3EC; --bg-alt:#EEE8D9; --surface:#FFFFFF;
+  --ink:#241F16; --ink-soft:#645C49; --ink-faint:#8C846E;
+  --border:#DCD3BC; --border-soft:#EAE3D2;
+  --navy:#1C3A52; --navy-dark:#122736; --navy-tint:#E4EBEF;
+  --marigold:#BD7A22; --marigold-dark:#8F5D18; --marigold-tint:#F4E4C6;
+  --green:#2E6B47; --green-tint:#DEEBE1;
+  --red:#A63A2A; --red-tint:#F5DFD8;
+  --purple:#5B4B8A; --purple-tint:#E9E4F3;
+  --radius-s:3px; --radius-m:6px;
+  --font-serif:'IBM Plex Serif',serif; --font-sans:'IBM Plex Sans',sans-serif;
+  --shadow-1: 0 1px 2px rgba(28,22,10,0.08); --shadow-2: 0 6px 20px rgba(28,22,10,0.16);
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0;font-family:var(--font-sans);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+button,input,select,textarea{font-family:inherit;}
+a{color:var(--navy);}
+:focus-visible{outline:2px solid var(--marigold-dark);outline-offset:2px;}
+.hidden{display:none !important;}
+.small{font-size:.78rem;color:var(--ink-soft);}
+.muted{color:var(--ink-faint);}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:600;letter-spacing:.01em;padding:2px 9px;border-radius:100px;line-height:1.6;}
+.badge-navy{background:var(--navy-tint);color:var(--navy);}
+.badge-marigold{background:var(--marigold-tint);color:var(--marigold-dark);}
+.badge-green{background:var(--green-tint);color:var(--green);}
+.badge-red{background:var(--red-tint);color:var(--red);}
+
+/* ---- top bar ---- */
+.topbar{background:var(--navy-dark);color:#EFE9DA;padding:12px 18px;position:sticky;top:0;z-index:30;
+  box-shadow:0 2px 10px rgba(0,0,0,.15); border-bottom:3px solid var(--marigold);}
+.topbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1320px;margin:0 auto;}
+.wordmark{font-family:var(--font-serif);font-weight:700;font-size:1.2rem;color:#fff;display:flex;align-items:center;gap:8px;}
+.wordmark .dot{color:var(--marigold);}
+.wordmark small{display:block;font-family:var(--font-sans);font-weight:400;font-size:.63rem;color:rgba(239,233,218,.6);margin-top:1px;}
+.who{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+#authStatus{color:#fff;font-weight:600;}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);display:inline-block;margin-right:5px;}
+.conn-dot.ok{background:var(--green);}
+.conn-dot.err{background:var(--red);}
+
+/* ---- layout ---- */
+.wrap{max-width:1320px;margin:0 auto;padding:18px 18px 60px;}
+.page-head{margin-bottom:14px;}
+.page-head h1{font-family:var(--font-serif);font-size:1.4rem;margin:0 0 4px;font-weight:600;color:var(--navy-dark);}
+.page-head p{margin:0;color:var(--ink-soft);font-size:.85rem;max-width:700px;line-height:1.5;}
+
+.chips{display:flex;flex-wrap:nowrap;gap:6px;margin:14px 0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:5px;}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--ink-soft);font-size:.76rem;font-weight:600;
+  padding:8px 13px;border-radius:100px;cursor:pointer;white-space:nowrap;flex:0 0 auto;min-height:36px;}
+.chip .n{opacity:.65;font-weight:500;margin-left:4px;}
+.chip.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+.toolbar{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.toolbar input[type=search]{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--surface);font-size:.9rem;min-height:42px;}
+.toolbar-filters{display:flex;gap:8px;flex-wrap:wrap;}
+.toolbar-filters select{flex:1;min-width:150px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--surface);font-size:.82rem;color:var(--ink-soft);min-height:40px;}
+.toolbar-actions{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:3px;}
+.toolbar-actions .btn{flex:0 0 auto;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 14px;border-radius:var(--radius-s);min-height:40px;
+  font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid transparent;white-space:nowrap;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{filter:brightness(1.12);}
+.btn-marigold{background:var(--marigold);color:#fff;}
+.btn-marigold:hover{filter:brightness(1.08);}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--border);}
+.btn-ghost:hover{background:var(--navy-tint);}
+.btn-danger{background:transparent;color:var(--red);border-color:var(--red-tint);}
+.btn-danger:hover{background:var(--red-tint);}
+.btn-sm{padding:7px 11px;font-size:.74rem;min-height:34px;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;}
+.ccard{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-m);padding:14px;box-shadow:var(--shadow-1);display:flex;gap:14px;}
+.ccard .photo{width:112px;height:132px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:var(--navy-tint);border:1px solid var(--border);}
+.ccard .avatar-fallback{width:112px;height:132px;border-radius:10px;flex:0 0 auto;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-serif);font-size:1.9rem;}
+.ccard .body{flex:1;min-width:0;display:flex;flex-direction:column;}
+.ccard h3{margin:6px 0 6px;font-size:1.08rem;font-family:var(--font-serif);font-weight:600;color:var(--ink);}
+.ccard .line{font-size:.82rem;color:var(--ink-soft);line-height:1.55;}
+.ccard .line .line-label{font-weight:700;color:var(--ink);}
+.ccard .call-line{font-size:.83rem;margin-top:7px;display:flex;flex-wrap:wrap;gap:10px;}
+.ccard .call-line a{text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px;}
+.mobile-btn{background:none;border:none;padding:0;font:inherit;color:var(--navy);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;min-height:32px;}
+.mobile-btn:hover{text-decoration:underline;}
+.ccard .actions{margin-top:auto;padding-top:10px;display:flex;gap:8px;}
+.icon-btn{border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-s);padding:5px 11px;
+  font-size:.74rem;font-weight:700;color:var(--navy);cursor:pointer;display:inline-flex;align-items:center;gap:4px;}
+.icon-btn:hover{background:var(--navy-tint);}
+.icon-btn.danger{color:var(--red);border-color:var(--red-tint);}
+.icon-btn.danger:hover{background:var(--red-tint);}
+.empty-note{padding:40px 10px;text-align:center;color:var(--ink-faint);font-size:.88rem;grid-column:1/-1;}
+
+/* ---- confirm dialog (native confirm() is blocked in the sandboxed artifact frame) ---- */
+.confirm-box{background:var(--surface);border-radius:var(--radius-m);max-width:360px;width:100%;box-shadow:var(--shadow-2);padding:20px;margin:auto;}
+.confirm-box p{margin:0 0 16px;font-size:.9rem;color:var(--ink);}
+.confirm-box .row{display:flex;justify-content:flex-end;gap:8px;}
+
+/* ---- modal ---- */
+.modal-backdrop{position:fixed;inset:0;background:rgba(28,22,10,.45);display:flex;align-items:flex-start;justify-content:center;
+  padding:26px 14px;overflow-y:auto;z-index:100;}
+.modal{background:var(--surface);border-radius:var(--radius-m);max-width:620px;width:100%;box-shadow:var(--shadow-2);margin:auto;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.modal-head h2{margin:0;font-family:var(--font-serif);font-size:1.1rem;color:var(--navy-dark);}
+.modal-close{background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--ink-faint);}
+.modal-body{padding:18px 20px;max-height:70vh;overflow-y:auto;}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field{margin-bottom:2px;}
+.field.full{grid-column:1/-1;}
+.field label{display:block;font-size:.74rem;font-weight:600;color:var(--ink-soft);margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-s);background:var(--bg);font-size:.85rem;color:var(--ink);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--navy);background:#fff;}
+.photo-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.photo-preview{width:70px;height:70px;border-radius:50%;object-fit:cover;background:var(--navy-tint);border:1px solid var(--border);}
+.section-title{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--marigold-dark);margin:16px 0 8px;}
+
+/* ---- toast ---- */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy-dark);color:#fff;padding:10px 18px;
+  border-radius:var(--radius-s);font-size:.83rem;box-shadow:var(--shadow-2);z-index:200;opacity:0;transition:opacity .2s;pointer-events:none;}
+#toast.show{opacity:1;}
+
+.bulk-panel{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-m);padding:16px;margin-bottom:16px;}
+.file-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-soft);font-size:.8rem;}
+.file-row:last-child{border-bottom:none;}
+.file-row select{padding:5px 7px;font-size:.76rem;border:1px solid var(--border);border-radius:var(--radius-s);}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table.rep{width:100%;border-collapse:collapse;font-size:.8rem;margin-top:8px;min-width:480px;}
+table.rep th,table.rep td{border:1px solid var(--border);padding:6px 8px;text-align:left;}
+table.rep th{background:var(--navy-tint);color:var(--navy);font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em;}
+
+@media (max-width:640px){
+  .form-grid{grid-template-columns:1fr;}
+  .wrap{padding:14px 10px 50px;}
+  .card-grid{grid-template-columns:1fr;}
+  .who .role{display:none;}
+  .who{width:100%;justify-content:space-between;}
+  .ulb-lookup-row{flex-direction:column;}
+  .ulb-lookup-row select, .ulb-lookup-row .btn{width:100%;}
+  .page-head h1{font-size:1.2rem;}
+}
+
+:root{--navy:#1F4D3A;--navy-dark:#0F2E22;--navy-tint:#E1EEE6;}
+#resultCount{margin:-4px 2px 10px;}
+.topbar .btn-ghost{color:#fff;border-color:rgba(255,255,255,.5);}
+.topbar .btn-ghost:hover{background:rgba(255,255,255,.14);}
+#filterNote{font-size:.78rem;color:var(--ink-soft);line-height:1.5;}
+#filterNote:empty{display:none;}
+.ccard .updated{font-size:.7rem;color:var(--ink-faint);margin-top:4px;}
+.ccard .line.notes{font-style:italic;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="wordmark">📇 Official<span class="dot">Contacts</span>
+      <small>MA&amp;UD Department, Government of Andhra Pradesh</small>
+    </div>
+    <div class="who">
+      <span class="small" id="connStatus"><span class="conn-dot"></span>Connecting…</span>
+      <span class="small" id="authStatus"></span>
+      <button class="btn btn-ghost btn-sm" id="signInBtn">🔒 Staff Sign In</button>
+      <button class="btn btn-ghost btn-sm hidden" id="signOutBtn">Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Official Contacts</h1>
+    <p>Collectors, Joint Collectors, SPs, ULB Commissioners, CRDA / AGICL / ADCL, the MA&UD HoDs and Nellore officials — find anyone in a few taps, see their photo, and call directly.</p>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Search name, designation, department, district, mobile…">
+    <div class="toolbar-filters" id="filterBar"></div>
+    <div id="filterNote"></div>
+    <div class="toolbar-actions">
+      <button class="btn btn-ghost btn-sm" id="templateBtn">⭳ Template</button>
+      <button class="btn btn-ghost btn-sm" id="bulkCsvBtn">⭱ Bulk upload</button>
+      <button class="btn btn-ghost btn-sm" id="bulkPhotoBtn">🖼 Photos</button>
+      <button class="btn btn-ghost btn-sm" id="photoNamesBtn">📋 Photo names</button>
+      <button class="btn btn-ghost btn-sm" id="exportBtn">⭳ Export</button>
+      <button class="btn btn-ghost btn-sm" id="vcfBtn">📱 Phone contacts</button>
+      <button class="btn btn-ghost btn-sm" id="manageUlbMapBtn">🔗 Manage ULB Mapping</button>
+      <button class="btn btn-ghost btn-sm" id="backupBtn">💾 Backup</button>
+      <button class="btn btn-ghost btn-sm" id="restoreBtn">♻ Restore</button>
+      <button class="btn btn-marigold btn-sm" id="addBtn">+ Add contact</button>
+    </div>
+  </div>
+
+  <div id="bulkPhotoPanel" class="bulk-panel hidden"></div>
+
+  <div id="resultCount" class="small muted"></div>
+  <div class="card-grid" id="grid"><div class="empty-note">Loading contacts…</div></div>
+</div>
+
+<input type="file" id="csvFile" accept=".csv,.xlsx" class="hidden">
+<input type="file" id="photoFiles" accept="image/*" multiple class="hidden">
+<input type="file" id="ulbMapCsvFile" accept=".csv,.xlsx" class="hidden">
+<input type="file" id="restoreFile" accept=".json,application/json" class="hidden">
+<div id="modalRoot"></div>
+<div id="toast"></div>
+
+<script src="./firebase-config.js"></script>
+<script>
+/* =========================================================
+   OFFICIAL CONTACTS — app configuration
+========================================================= */
+const APP = { key:'official', title:'Official Contacts', fileStem:'OfficialContacts' };
+const FEATURES = { ulbMap:false };
+
+const HOD_LIST = ['CDMA','EnCPH','DTCP','MEPMA','SAC','APUFIDC','TIDCO','MA&UD Secretariat'];
+const CRDA_ORGS = ['CRDA','AGICL','ADCL'];
+const NELLORE_GROUPS = ['Municipal Corporation','Revenue','Police','Education','Other District Officials'];
+const ULB_TYPES = ['Municipal Corporation','Municipality','Nagar Panchayat'];
+
+// key: stored in the database (migrated Collector / Joint Collector / Commissioner records keep their keys and fields)
+const CATEGORIES = [
+  { key:'collector',    label:'Collector',       code:'COLL', idField:'district', idLabel:'District',
+    fields:[ {key:'district',label:'District'}, {key:'designation',label:'Designation (optional)'}, {key:'cadre',label:'Cadre / Batch (optional)'} ] },
+  { key:'jc',           label:'Joint Collector', code:'JC',   idField:'district', idLabel:'District',
+    fields:[ {key:'district',label:'District'}, {key:'designation',label:'Designation (optional)'}, {key:'charge',label:'Charge / Portfolio (optional)'} ] },
+  { key:'sp',           label:'SP',              code:'SP',   idField:'district', idLabel:'District',
+    fields:[ {key:'district',label:'District'},
+      {key:'designation',label:'Designation', suggest:true, canon:true, base:['Superintendent of Police','Additional SP','Police Commissioner','DCP']} ] },
+  { key:'commissioner', label:'ULB Commissioner', code:'COMM', idField:'ulbName', idLabel:'ULB Name',
+    fields:[ {key:'ulbName',label:'ULB Name'}, {key:'ulbType',label:'ULB Type', options:ULB_TYPES},
+      {key:'district',label:'District'}, {key:'cadre',label:'Cadre / Grade (optional)'} ] },
+  { key:'crda',         label:'CRDA / AGICL / ADCL', code:'CRDA', idField:'name', idLabel:'Full Name',
+    fields:[ {key:'organization',label:'Organization', options:CRDA_ORGS, fixed:true},
+      {key:'department',label:'Department / Section (optional)', suggest:true, canon:true, placeholder:'e.g. Engineering, Planning'},
+      {key:'designation',label:'Designation', suggest:true, canon:true} ] },
+  { key:'maud',         label:'MA&UD',           code:'MAUD', idField:'name', idLabel:'Full Name',
+    fields:[ {key:'hod',label:'HoD / Office', suggest:true, canon:true, strict:true, base:HOD_LIST, placeholder:'Pick a HoD, or type a new one'},
+      {key:'regionalOffice',label:'Regional Office (optional)', suggest:true, canon:true, placeholder:'e.g. RDMA Guntur, DTCP Region Visakhapatnam'},
+      {key:'wing',label:'Wing / Section (optional)', suggest:true, canon:true},
+      {key:'designation',label:'Designation', suggest:true, canon:true},
+      {key:'district',label:'District (optional)'} ] },
+  { key:'nellore',      label:'Nellore Officials', code:'NLR', idField:'name', idLabel:'Full Name',
+    fields:[ {key:'group',label:'Group', options:NELLORE_GROUPS, fixed:true},
+      {key:'department',label:'Department (optional)', suggest:true, canon:true, placeholder:'e.g. Engineering, Town Planning, Public Health'},
+      {key:'designation',label:'Designation', suggest:true, canon:true} ] },
+];
+
+/* ---- which organisation a contact belongs to (the single filter on the All tab) ---- */
+function orgOf(c){
+  switch(c.category){
+    case 'collector': return 'Collector';
+    case 'jc': return 'Joint Collector';
+    case 'sp': return 'SP';
+    case 'commissioner': return 'ULB Commissioner';
+    case 'crda': return c.organization;
+    case 'maud': return c.hod;
+    case 'nellore': return c.group ? 'Nellore – ' + c.group : 'Nellore';
+    default: return '';
+  }
+}
+
+/* ---- what each card shows ---- */
+function cardRows(cat, c){
+  switch(cat.key){
+    case 'collector': return [ {label:'District',value:c.district}, {label:'Designation',value:c.designation}, {label:'Cadre / Batch',value:c.cadre} ];
+    case 'jc': return [ {label:'District',value:c.district}, {label:'Designation',value:c.designation}, {label:'Charge',value:c.charge} ];
+    case 'sp': return [ {label:'District',value:c.district}, {label:'Designation',value:c.designation} ];
+    case 'commissioner': return [ {label:'ULB Name',value:c.ulbName}, {label:'ULB Type',value:c.ulbType}, {label:'District',value:c.district}, {label:'Cadre / Grade',value:c.cadre} ];
+    case 'crda': return [ {label:'Organization',value:c.organization}, {label:'Department / Section',value:c.department}, {label:'Designation',value:c.designation} ];
+    case 'maud': return [ {label:'HoD / Office',value:c.hod}, {label:'Regional Office',value:c.regionalOffice}, {label:'Wing / Section',value:c.wing}, {label:'Designation',value:c.designation}, {label:'District',value:c.district} ];
+    case 'nellore': return [ {label:'Group',value:c.group}, {label:'Department',value:c.department}, {label:'Designation',value:c.designation} ];
+    default: return [];
+  }
+}
+
+/* ---- role shown next to the name in the phone's address book ---- */
+function roleLine(c){
+  const d = ' – ';
+  switch(c.category){
+    case 'collector': return 'Collector'+(c.district?d+c.district:'');
+    case 'jc': return 'Joint Collector'+(c.district?d+c.district:'');
+    case 'sp': return 'SP'+(c.district?d+c.district:'');
+    case 'commissioner': return 'Commissioner'+(c.ulbName?d+c.ulbName:'');
+    case 'crda': return (c.designation||'Official')+(c.organization?d+c.organization:'');
+    case 'maud': return (c.designation||'Official')+(c.hod?d+c.hod:'');
+    case 'nellore': return (c.designation||'Official')+d+'Nellore'+(c.department?' '+c.department:(c.group?' '+c.group:''));
+    default: return '';
+  }
+}
+
+/* ---- the same person entered under two tabs (Nellore's Collector, JC, SP) is treated as one ---- */
+function dedupeKey(c){ return digits10(c.primaryMobile) || ''; }
+
+/* ---- filters (each one narrows the next; empty ones hide themselves) ---- */
+function FILTERS_FOR(cat){
+  const dept = { id:'dept', label:'Department', allLabel:'All departments', values:c=>c.department };
+  const desig = { id:'desig', label:'Designation', allLabel:'All designations', values:c=>c.designation };
+  const district = { id:'district', label:'District', allLabel:'All districts', values:c=>c.district };
+  switch(cat){
+    case '': return [ { id:'org', label:'Organization', allLabel:'All organizations', values:c=>orgOf(c) } ];
+    case 'collector': case 'jc': case 'sp': return [district];
+    case 'commissioner': return [ { id:'ulb', label:'ULB', allLabel:'All ULBs', values:c=>c.ulbName } ];
+    case 'crda': return [ { id:'org', label:'Organization', allLabel:'All (CRDA / AGICL / ADCL)', values:c=>c.organization }, dept, desig ];
+    case 'maud': return [ { id:'hod', label:'HoD', allLabel:'All HoDs', values:c=>c.hod },
+                          { id:'region', label:'Regional office', allLabel:'All offices', values:c=>c.regionalOffice }, desig ];
+    case 'nellore': return [ { id:'group', label:'Group', allLabel:'All groups', values:c=>c.group }, dept, desig ];
+    default: return [];
+  }
+}
+
+
+const COMMON_FIELDS = [
+  {key:'name', label:'Name'},
+  {key:'primaryMobile', label:'Primary Mobile'},
+  {key:'altMobile', label:'Alternate Mobile'},
+  {key:'email', label:'Email'},
+  {key:'officeAddress', label:'Office Address'},
+  {key:'notes', label:'Notes'},
+];
+// The ULB Master Mapping table — links a ULB to the wider geography/jurisdictions
+// so the global ULB Lookup can cross-reference MLA, Collector, JC, UDA, LS and RS MP records.
+const ULB_MAP_FIELDS = [
+  {key:'ulbName', label:'ULB Name'},
+  {key:'district', label:'District'},
+  {key:'constituency', label:'Assembly Constituency'},
+  {key:'udaName', label:'UDA Name (optional)'},
+  {key:'lokSabhaConstituency', label:'Lok Sabha Constituency'},
+  {key:'rsMPName', label:'Rajya Sabha MP (optional — not geographically fixed)'},
+];
+function catByKey(k){ return CATEGORIES.find(c=>c.key===k); }
+function catByCode(code){ return CATEGORIES.find(c=>c.code.toLowerCase()===String(code).toLowerCase()); }
+function templateColumns(cat){ return COMMON_FIELDS.concat(cat.fields); }
+function escapeHtml(s){ return (s==null?'':String(s)).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function initials(name){ return (name||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+function normalize(v){
+  return (v==null?'':String(v))
+    .toLowerCase()
+    .replace(/[_\-]+/g,' ')      // underscores/hyphens count as spaces
+    .replace(/[^a-z0-9\s]/g,'')  // drop punctuation: (SC), (ST), periods, apostrophes...
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function splitList(arr){
+  const out=[]; (Array.isArray(arr)?arr:[arr]).forEach(v=>{ if(v) String(v).split(',').forEach(x=>{ x=x.trim(); if(x) out.push(x); }); }); return out;
+}
+function fmtDate(iso){
+  const d=new Date(iso); if(isNaN(d)) return '';
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._h); toast._h=setTimeout(()=>t.classList.remove('show'),2600); }
+
+/* =========================================================
+   FIREBASE BACKEND
+   Fill in YOUR_FIREBASE_CONFIG below with the values from
+   Firebase Console → Project Settings → General → "Your apps" → Web app.
+   (Loaded via dynamic import() so this stays a normal classic script —
+   that keeps every function below reachable from inline onclick="" handlers.)
+========================================================= */
+const YOUR_FIREBASE_CONFIG = window.FIREBASE_CONFIG || null;
+
+let fbAuth=null, fbSignInWithEmailAndPassword=null, fbSignOut=null;
+let db=null, assetsCap=null;
+
+function downloadBlob(filename, data, mime){
+  const blob = new Blob([data], { type: mime || 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+
+// Compresses an uploaded photo down to a small JPEG data: URI so it can be stored
+// directly on the Firestore document (no Storage/billing needed). Targets ~60KB
+// raw (~80KB as base64) — plenty for a small identifying photo on a contact card.
+function compressImageToDataUrl(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read the image file.'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Could not decode the image file.'));
+      img.onload = () => {
+        let maxDim = 280, quality = 0.72;
+        const targetBytes = 60000;
+        let dataUrl = '';
+        for(let pass=0; pass<6; pass++){
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
+          const approxBytes = dataUrl.length * 0.75;
+          if(approxBytes <= targetBytes || (maxDim <= 120 && quality <= 0.4)) break;
+          if(quality > 0.42) quality -= 0.12; else maxDim = Math.round(maxDim * 0.75);
+        }
+        resolve(dataUrl);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =========================================================
+   APP STATE
+========================================================= */
+let CAN_WRITE=false;
+let allDocsCache = [];   // every doc in the collection (incl. categories this app doesn't show)
+let contactCache = [];
+let ulbMapCache = [];
+let activeCategory = '';
+let unsubscribe = null, unsubscribeUlbMap = null;
+
+async function initCapabilities(){
+  const status = document.getElementById('connStatus');
+  let authModRef;
+  if(!YOUR_FIREBASE_CONFIG || String(YOUR_FIREBASE_CONFIG.apiKey||'').indexOf('REPLACE_ME')>=0){
+    status.innerHTML = '<span class="conn-dot err"></span>Firebase not configured';
+    document.getElementById('grid').innerHTML = '<div class="empty-note">Open <b>firebase-config.js</b> and paste your Firebase project values into it (see README), then reload.</div>';
+    return;
+  }
+  try{
+    const [{ initializeApp }, firestoreMod, authMod] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"),
+      import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js"),
+    ]);
+    authModRef = authMod;
+    const fbApp = initializeApp(YOUR_FIREBASE_CONFIG);
+    let fsDb;
+    try{
+      // offline cache: repeat opens only fetch what changed, and the app still opens without signal
+      fsDb = firestoreMod.initializeFirestore(fbApp, { localCache: firestoreMod.persistentLocalCache({ tabManager: firestoreMod.persistentMultipleTabManager() }) });
+    }catch(e){ fsDb = firestoreMod.getFirestore(fbApp); }
+    fbAuth = authMod.getAuth(fbApp);
+    fbSignInWithEmailAndPassword = authMod.signInWithEmailAndPassword;
+    fbSignOut = authMod.signOut;
+
+    // Thin shim so the rest of the app can keep using db.collection(x).doc(id).update/delete/add/onSnapshot(...)
+    db = {
+      collection(name){
+        const colRef = firestoreMod.collection(fsDb, name);
+        return {
+          doc(id){
+            const dRef = firestoreMod.doc(fsDb, name, id);
+            return {
+              async update(data){ return firestoreMod.updateDoc(dRef, data); },
+              async delete(){ return firestoreMod.deleteDoc(dRef); },
+              async set(data){ return firestoreMod.setDoc(dRef, data); },
+            };
+          },
+          async add(data){ const r = await firestoreMod.addDoc(colRef, data); return { id: r.id }; },
+          onSnapshot(cb, errCb){
+            return firestoreMod.onSnapshot(colRef, snap=>{
+              cb({ docs: snap.docs.map(d=>({ id:d.id, data:()=>d.data() })) });
+            }, errCb);
+          },
+        };
+      }
+    };
+    // No Firebase Storage (that now requires the paid Blaze plan just to switch on).
+    // Photos are compressed client-side into a small JPEG and stored as a data: URI
+    // directly on the contact document — needs nothing beyond Firestore + Auth.
+    assetsCap = {
+      async upload(file){
+        const url = await compressImageToDataUrl(file);
+        return { url };
+      }
+    };
+  }catch(e){
+    status.innerHTML = '<span class="conn-dot err"></span>Could not load Firebase — check YOUR_FIREBASE_CONFIG';
+    document.getElementById('grid').innerHTML = '<div class="empty-note">Firebase failed to initialise. Confirm the config values at the top of the script and that Firestore and Authentication are enabled in the Firebase console.</div>';
+    return;
+  }
+  status.innerHTML = '<span class="conn-dot ok"></span>Live';
+
+  authModRef.onAuthStateChanged(fbAuth, user=>{
+    CAN_WRITE = !!user;
+    document.getElementById('authStatus').textContent = user ? ('Signed in: ' + (user.email||'')) : '';
+    document.getElementById('signInBtn').classList.toggle('hidden', !!user);
+    document.getElementById('signOutBtn').classList.toggle('hidden', !user);
+    applyWritePermissions();
+    renderGrid();
+  });
+
+  document.getElementById('signInBtn').addEventListener('click', openSignInModal);
+  document.getElementById('signOutBtn').addEventListener('click', ()=> fbSignOut(fbAuth));
+  if(location.hash === '#edit') openSignInModal();
+
+  subscribeContacts();
+  subscribeUlbMap();
+}
+function openSignInModal(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `<div class="modal-backdrop" id="signBackdrop">
+    <div class="modal" style="max-width:360px;">
+      <div class="modal-head"><h2>Staff Sign In</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="field full" style="margin-bottom:10px;"><label>Email</label><input id="signEmail" type="email"></div>
+        <div class="field full"><label>Password</label><input id="signPass" type="password"></div>
+        <div class="small muted" style="margin-top:10px;">Staff accounts are created by an administrator in the Firebase console (Authentication → Add user) — this isn't self-signup.</div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="signInSubmit">Sign In</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('signInSubmit').addEventListener('click', async ()=>{
+    const email = document.getElementById('signEmail').value.trim();
+    const pass = document.getElementById('signPass').value;
+    if(!email || !pass){ toast('Enter email and password.'); return; }
+    try{ await fbSignInWithEmailAndPassword(fbAuth, email, pass); closeModal(); toast('Signed in.'); }
+    catch(e){ toast('Sign-in failed: ' + (e.code||e.message)); }
+  });
+  document.getElementById('signBackdrop').addEventListener('click', e=>{ if(e.target.id==='signBackdrop') closeModal(); });
+}
+
+function applyWritePermissions(){
+  // Auth state can change during a session (sign in / sign out), so this must
+  // both hide AND un-hide — not just add the class once at load.
+  ['addBtn','bulkCsvBtn','bulkPhotoBtn','backupBtn','restoreBtn','photoNamesBtn'].forEach(id=>{
+    document.getElementById(id).classList.toggle('hidden', !CAN_WRITE);
+  });
+  document.getElementById('manageUlbMapBtn').classList.toggle('hidden', !(FEATURES.ulbMap && CAN_WRITE && activeCategory===''));
+}
+
+/* =========================================================
+   CHIPS, CASCADING FILTERS, SEARCH & GRID
+========================================================= */
+let filterSel = {};
+let hayCache = new WeakMap();
+function resetDerivedCaches(){ hayCache = new WeakMap(); if(typeof onDataChanged==='function') onDataChanged(); }
+
+function renderChips(){
+  const wrap = document.getElementById('chips');
+  const counts = {}; contactCache.forEach(c=> counts[c.category]=(counts[c.category]||0)+1);
+  const all = [{key:'',label:'All'}].concat(CATEGORIES.map(c=>({key:c.key,label:c.label})));
+  wrap.innerHTML = all.map(c=>{
+    const n = c.key ? (counts[c.key]||0) : contactCache.length;
+    return `<button class="chip ${activeCategory===c.key?'active':''}" data-key="${c.key}">${escapeHtml(c.label)}<span class="n">${n}</span></button>`;
+  }).join('');
+  wrap.querySelectorAll('.chip').forEach(b=> b.addEventListener('click', ()=>{
+    activeCategory = b.dataset.key; filterSel = {};
+    renderChips(); renderFilters(); renderGrid();
+  }));
+  applyWritePermissions();
+}
+
+// Filters are defined per app (FILTERS_FOR) and cascade: each one's choices are
+// worked out from the records that survive the filters before it.
+function filterSpecs(){ return (typeof FILTERS_FOR==='function' ? FILTERS_FOR(activeCategory) : []) || []; }
+function valuesOf(spec, c){
+  const r = spec.values(c);
+  return (Array.isArray(r) ? r : [r]).map(v=>String(v==null?'':v).trim()).filter(Boolean);
+}
+function passes(c, spec){
+  const sel = filterSel[spec.id]; if(!sel) return true;
+  return valuesOf(spec, c).some(v=>normalize(v)===normalize(sel));
+}
+function filterOptions(specs, i){
+  let recs = contactCache.filter(c=>!activeCategory || c.category===activeCategory);
+  for(let j=0;j<i;j++) recs = recs.filter(c=>passes(c, specs[j]));
+  const seen = new Map();
+  const add = v=>{ v=String(v||'').trim(); if(v && !seen.has(normalize(v))) seen.set(normalize(v), v); };
+  recs.forEach(c=> valuesOf(specs[i], c).forEach(add));
+  if(specs[i].extra) specs[i].extra(filterSel).forEach(add);
+  return [...seen.values()].sort((a,b)=>a.localeCompare(b));
+}
+function renderFilters(){
+  const specs = filterSpecs();
+  const bar = document.getElementById('filterBar');
+  let html = '';
+  specs.forEach((sp, i)=>{
+    const opts = filterOptions(specs, i);
+    if(filterSel[sp.id] && !opts.some(o=>normalize(o)===normalize(filterSel[sp.id]))) filterSel[sp.id] = '';
+    if(!opts.length) return;   // a filter with nothing to choose from stays hidden
+    const cur = normalize(filterSel[sp.id]||'');
+    html += `<select data-fid="${sp.id}"><option value="">${escapeHtml(sp.allLabel || ('All '+sp.label))}</option>` +
+      opts.map(o=>`<option ${normalize(o)===cur?'selected':''}>${escapeHtml(o)}</option>`).join('') + `</select>`;
+  });
+  bar.innerHTML = html;
+  bar.querySelectorAll('select').forEach(sel=> sel.addEventListener('change', ()=>{
+    const id = sel.dataset.fid; filterSel[id] = sel.value;
+    const idx = specs.findIndex(s=>s.id===id);
+    specs.slice(idx+1).forEach(s=> filterSel[s.id] = '');
+    renderFilters(); renderGrid();
+  }));
+  const note = document.getElementById('filterNote');
+  note.innerHTML = (typeof FILTER_NOTE==='function') ? (FILTER_NOTE(filterSel)||'') : '';
+}
+
+const SEARCH_SKIP = new Set(['id','photoUrl','createdAt','updatedAt']);
+function hayOf(c){
+  let h = hayCache.get(c); if(h) return h;
+  const cat = catByKey(c.category);
+  const parts = [cat ? cat.label : ''];
+  Object.keys(c).forEach(k=>{ if(!SEARCH_SKIP.has(k) && typeof c[k]==='string') parts.push(c[k]); });
+  parts.push(String(c.primaryMobile||'').replace(/\D/g,''), String(c.altMobile||'').replace(/\D/g,''));
+  if(typeof extraSearchText==='function') parts.push(extraSearchText(c));
+  h = parts.join(' ').toLowerCase(); hayCache.set(c, h); return h;
+}
+function matchesFilters(c){
+  if(activeCategory && c.category !== activeCategory) return false;
+  for(const sp of filterSpecs()) if(!passes(c, sp)) return false;
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  if(q){ const hay = hayOf(c); for(const t of q.split(/\s+/)) if(!hay.includes(t)) return false; }
+  return true;
+}
+
+// Values a field can take: the fixed base list plus whatever is already used in this category.
+// Map of normalised spelling -> the spelling to keep, so "cdma" and "CDMA" never become two filter entries.
+function fieldPool(cat, f){
+  const seen = new Map(); const add = v=>{ v=String(v||'').trim(); if(v && !seen.has(normalize(v))) seen.set(normalize(v), v); };
+  (f.base||[]).forEach(add);
+  contactCache.filter(c=>c.category===cat.key).forEach(c=>add(c[f.key]));
+  return seen;
+}
+function genericRows(cat, c){ return cat.fields.map(f=>({label:f.label, value:c[f.key]})); }
+function renderGrid(){
+  const grid = document.getElementById('grid');
+  const cmp = (typeof compareContacts==='function') ? compareContacts : (a,b)=>(a.name||'').localeCompare(b.name||'');
+  let rows = contactCache.filter(matchesFilters);
+  const also = {};
+  if(activeCategory==='' && typeof dedupeKey==='function'){
+    // one person recorded under two tabs (e.g. a Collector who is also in Nellore Officials) is shown once on All
+    const idx = c=>CATEGORIES.findIndex(x=>x.key===c.category);
+    const keep = new Map(), drop = new Set();
+    rows.slice().sort((a,b)=>idx(a)-idx(b)).forEach(c=>{
+      const k = dedupeKey(c); if(!k) return;
+      if(keep.has(k)){ drop.add(c.id); const kid = keep.get(k).id; (also[kid] = also[kid]||[]).push((catByKey(c.category)||{}).label||c.category); }
+      else keep.set(k, c);
+    });
+    rows = rows.filter(c=>!drop.has(c.id));
+  }
+  rows.sort(cmp);
+
+  document.getElementById('resultCount').textContent = contactCache.length ? `${rows.length} contact${rows.length===1?'':'s'}` : '';
+  if(!rows.length){ grid.innerHTML = '<div class="empty-note">No contacts match your search / filters.</div>'; return; }
+  grid.innerHTML = rows.map(c=>{
+    const cat = catByKey(c.category) || {label:c.category,key:c.category,fields:[]};
+    const sub = ((typeof cardRows==='function') ? cardRows(cat, c) : genericRows(cat, c)).filter(r=>r.value);
+    const photo = c.photoUrl ? `<img class="photo" src="${c.photoUrl}" alt="">` : `<div class="avatar-fallback">${initials(c.name)}</div>`;
+    const calls = [];
+    if(c.primaryMobile) calls.push(`<button type="button" class="mobile-btn" onclick="openCallSheet('${escapeHtml(c.primaryMobile)}')">📞 ${escapeHtml(c.primaryMobile)}</button>`);
+    if(c.altMobile) calls.push(`<button type="button" class="mobile-btn" onclick="openCallSheet('${escapeHtml(c.altMobile)}')">📞 ${escapeHtml(c.altMobile)} <span class="muted small">(alt)</span></button>`);
+    const stamp = c.updatedAt || c.createdAt;
+    return `<div class="ccard">
+      ${photo}
+      <div class="body">
+        <span class="badge badge-navy">${escapeHtml(cat.label)}</span>
+        <h3>${escapeHtml(c.name)}</h3>
+        ${sub.map(r=>`<div class="line"><span class="line-label">${escapeHtml(r.label)}:</span> ${escapeHtml(r.value)}</div>`).join('')}
+        ${c.email?`<div class="line"><span class="line-label">Email:</span> ${escapeHtml(c.email)}</div>`:''}
+        ${c.officeAddress?`<div class="line"><span class="line-label">Office:</span> ${escapeHtml(c.officeAddress)}</div>`:''}
+        ${also[c.id]?`<div class="line"><span class="line-label">Also listed in:</span> ${escapeHtml(also[c.id].join(', '))}</div>`:''}
+        ${c.notes?`<div class="line notes"><span class="line-label">Notes:</span> ${escapeHtml(c.notes)}</div>`:''}
+        <div class="call-line">${calls.join('')}</div>
+        ${stamp?`<div class="updated">Updated ${escapeHtml(fmtDate(stamp))}</div>`:''}
+        ${CAN_WRITE?`<div class="actions"><button class="icon-btn" onclick="openContactModal('${c.id}')">✏ Edit</button><button class="icon-btn danger" onclick="deleteContact('${c.id}')">🗑 Delete</button></div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* =========================================================
+   REALTIME SUBSCRIPTIONS
+========================================================= */
+function subscribeContacts(){
+  if(unsubscribe) unsubscribe();
+  unsubscribe = db.collection('contacts').onSnapshot(snap=>{
+    allDocsCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    contactCache = allDocsCache.filter(c=>catByKey(c.category));
+    resetDerivedCaches();
+    renderChips(); renderFilters(); renderGrid();
+  }, err=>{
+    // Category tabs are static (not data-dependent) — show them even if the read was denied,
+    // so the page doesn't look broken while the real cause (rules) gets fixed.
+    renderChips();
+    document.getElementById('grid').innerHTML = `<div class="empty-note">⚠ Could not load contacts: ${escapeHtml(err.message)}.<br><br>
+      This almost always means the Firestore security rules haven't been published yet.<br>
+      Firebase Console → Firestore Database → Rules → paste in <code>firestore.rules</code> → click <b>Publish</b> (not just save).</div>`;
+    toast('Could not load contacts: ' + err.message);
+  });
+}
+
+function subscribeUlbMap(){
+  if(!FEATURES.ulbMap) return;
+  if(unsubscribeUlbMap) unsubscribeUlbMap();
+  unsubscribeUlbMap = db.collection('ulbmap').onSnapshot(snap=>{
+    ulbMapCache = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    resetDerivedCaches();
+    renderFilters(); renderGrid();
+  }, err=>{
+    toast('Could not load ULB mapping: ' + err.message + ' — check Firestore rules are published.');
+  });
+}
+
+/* =========================================================
+   ULB MASTER MAPPING (manager, upload)
+========================================================= */
+function openUlbMapManager(){
+  if(!CAN_WRITE){ toast('You have view-only access.'); return; }
+  renderUlbMapManagerModal();
+}
+function renderUlbMapManagerModal(){
+  const root = document.getElementById('modalRoot');
+  const rowsHtml = ulbMapCache.slice().sort((a,b)=>(a.ulbName||'').localeCompare(b.ulbName||'')).map(m=>`
+    <tr>
+      <td>${escapeHtml(m.ulbName)}</td><td>${escapeHtml(m.district)}</td><td>${escapeHtml(m.constituency)}</td>
+      <td>${escapeHtml(m.udaName)}</td><td>${escapeHtml(m.lokSabhaConstituency)}</td><td>${escapeHtml(m.rsMPName)}</td>
+      <td><button class="icon-btn" onclick="editUlbMapRow('${m.id}')">✏</button> <button class="icon-btn danger" onclick="deleteUlbMapRow('${m.id}')">🗑</button></td>
+    </tr>`).join('');
+  root.innerHTML = `<div class="modal-backdrop" id="mBackdrop">
+    <div class="modal" style="max-width:820px;">
+      <div class="modal-head"><h2>Manage ULB Mapping</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <p class="small">This table links each ULB to its District, Assembly Constituency, UDA and Lok Sabha Constituency, so the ULB filter on the All tab can automatically pull in the right MLAs (list several constituencies separated by commas), Ministers, UDA Chairperson and Lok Sabha MP. Rajya Sabha MPs aren't tied to a fixed area, so link one manually only if you want a specific RS MP shown for this ULB.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="btn btn-ghost btn-sm" onclick="downloadUlbMapTemplate()">⭳ CSV template</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ulbMapCsvFile').click()">⭱ Bulk upload</button>
+          <button class="btn btn-marigold btn-sm" onclick="openUlbMapRowForm(null)">+ Add mapping row</button>
+        </div>
+        <div class="table-scroll"><table class="rep">
+          <thead><tr><th>ULB</th><th>District</th><th>Constituency</th><th>UDA</th><th>Lok Sabha</th><th>Rajya Sabha MP</th><th></th></tr></thead>
+          <tbody>${rowsHtml || '<tr><td colspan="7" class="small muted">No mapping rows yet.</td></tr>'}</tbody>
+        </table></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>
+    </div>
+  </div>`;
+  document.getElementById('mBackdrop').addEventListener('click', e=>{ if(e.target.id==='mBackdrop') closeModal(); });
+}
+function openUlbMapRowForm(id){
+  const m = id ? ulbMapCache.find(x=>x.id===id) : null;
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `<div class="modal-backdrop" id="mBackdrop2">
+    <div class="modal">
+      <div class="modal-head"><h2>${m?'Edit':'Add'} ULB mapping row</h2><button class="modal-close" onclick="renderUlbMapManagerModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="form-grid">
+          ${ULB_MAP_FIELDS.map(f=>`<div class="field${f.key==='ulbName'?' full':''}"><label>${f.label}</label><input id="um_${f.key}" value="${m?escapeHtml(m[f.key]||''):''}"></div>`).join('')}
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="renderUlbMapManagerModal()">Cancel</button>
+        <button class="btn btn-primary" id="umSaveBtn">${m?'Save changes':'Add row'}</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('umSaveBtn').addEventListener('click', ()=>saveUlbMapRow(id));
+}
+async function saveUlbMapRow(id){
+  const data = {};
+  ULB_MAP_FIELDS.forEach(f=>{ const el=document.getElementById('um_'+f.key); if(el) data[f.key]=el.value.trim(); });
+  if(!data.ulbName){ toast('Please enter a ULB name.'); return; }
+  try{
+    if(id) await db.collection('ulbmap').doc(id).update(data);
+    else await db.collection('ulbmap').add(data);
+    renderUlbMapManagerModal();
+    toast('ULB mapping saved.');
+  }catch(e){ toast('Could not save mapping: ' + (e.message||e.code)); }
+}
+function editUlbMapRow(id){ openUlbMapRowForm(id); }
+async function deleteUlbMapRow(id){
+  const ok = await customConfirm('Delete this ULB mapping row?');
+  if(!ok) return;
+  try{ await db.collection('ulbmap').doc(id).delete(); renderUlbMapManagerModal(); toast('Mapping row removed.'); }
+  catch(e){ toast('Could not delete: ' + (e.message||e.code)); }
+}
+async function downloadUlbMapTemplate(){
+  const header = ULB_MAP_FIELDS.map(f=>f.label).join(',');
+  const csv = header + '\n' + 'Example ULB,Example District,Example Constituency,Example UDA,Example Lok Sabha Constituency,\n';
+  downloadBlob('ULB_Mapping_template.csv', csv);
+}
+async function handleUlbMapCsvUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  let rows;
+  try{ rows = await readTable(file); }catch(err){ toast(err.message||'Could not read file.'); e.target.value=''; return; }
+  if(rows.length<2){ toast('No data rows found.'); e.target.value=''; return; }
+  const headerMap = buildHeaderMap(ULB_MAP_FIELDS);
+  const headers = rows[0].map(h=>String(h).trim().toLowerCase());
+  const existingByName = new Map(ulbMapCache.map(m=>[normalize(m.ulbName), m.id]));
+  let added=0, updated=0, failed=0;
+  for(let i=1;i<rows.length;i++){
+    const vals = rows[i];
+    const row = {};
+    headers.forEach((h,idx)=>{ const key=lookupHeader(headerMap,h); if(key) row[key]=String(vals[idx]==null?'':vals[idx]).trim(); });
+    if(!row.ulbName) continue;
+    try{
+      const key = normalize(row.ulbName);
+      if(existingByName.has(key)){ await db.collection('ulbmap').doc(existingByName.get(key)).update(row); updated++; }
+      else{ const r = await db.collection('ulbmap').add(row); existingByName.set(key, r.id); added++; }
+    }catch(err){ failed++; }
+  }
+  toast(`ULB mapping: ${added} added, ${updated} updated${failed?', '+failed+' failed':''}.`);
+  renderUlbMapManagerModal();
+  e.target.value='';
+}
+
+/* =========================================================
+   ADD / EDIT CONTACT
+========================================================= */
+let pendingPhotoFile = null;
+function openContactModal(id){
+  if(!CAN_WRITE){ toast('You have view-only access.'); return; }
+  const c = id ? contactCache.find(x=>x.id===id) : null;
+  pendingPhotoFile = null;
+  const defaultCat = c ? c.category : (activeCategory || CATEGORIES[0].key);
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `
+  <div class="modal-backdrop" id="mBackdrop">
+    <div class="modal">
+      <div class="modal-head"><h2>${c?'Edit contact':'Add contact'}</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div class="photo-row">
+          <img class="photo-preview" id="photoPreview" src="${c&&c.photoUrl?c.photoUrl:''}" style="${c&&c.photoUrl?'':'display:none'}">
+          <div class="avatar-fallback" id="photoFallback" style="${c&&c.photoUrl?'display:none':''}">${initials(c?c.name:'')}</div>
+          <div>
+            <input type="file" accept="image/*" id="photoInput">
+            <div class="small muted">Optional. JPEG or PNG.</div>
+          </div>
+        </div>
+        <div class="field full">
+          <label>Category</label>
+          <select id="fCategory">${CATEGORIES.map(cc=>`<option value="${cc.key}" ${cc.key===defaultCat?'selected':''}>${cc.label}</option>`).join('')}</select>
+        </div>
+        <div class="form-grid" id="formGrid"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="saveBtn">${c?'Save changes':'Add contact'}</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('photoInput').addEventListener('change', e=>{
+    const f = e.target.files[0]; if(!f) return;
+    pendingPhotoFile = f;
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      const img = document.getElementById('photoPreview');
+      img.src = ev.target.result; img.style.display='';
+      document.getElementById('photoFallback').style.display='none';
+    };
+    reader.readAsDataURL(f);
+  });
+  document.getElementById('fCategory').addEventListener('change', ()=> renderFormFields(catByKey(document.getElementById('fCategory').value), c));
+  renderFormFields(catByKey(defaultCat), c);
+  document.getElementById('saveBtn').addEventListener('click', ()=> saveContact(id));
+  document.getElementById('mBackdrop').addEventListener('click', e=>{ if(e.target.id==='mBackdrop') closeModal(); });
+}
+function renderFormFields(cat, c){
+  const grid = document.getElementById('formGrid');
+  const all = COMMON_FIELDS.concat(cat.fields);
+  grid.innerHTML = all.map(f=>{
+    const full = ['name','officeAddress','notes','ulbs'].includes(f.key) ? ' full' : '';
+    const val = c ? escapeHtml(c[f.key]||'') : '';
+    if(f.options){
+      return `<div class="field${full}"><label>${f.label}</label><select id="ff_${f.key}">
+        <option value=""></option>${f.options.map(o=>`<option ${c&&c[f.key]===o?'selected':''}>${o}</option>`).join('')}</select></div>`;
+    }
+    if(f.key==='notes'){
+      return `<div class="field${full}"><label>${f.label}</label><textarea id="ff_${f.key}" rows="2">${val}</textarea></div>`;
+    }
+    if(f.suggest){
+      const dl = [...fieldPool(cat, f).values()].sort((a,b)=>a.localeCompare(b));
+      return `<div class="field${full}"><label>${f.label}</label><input id="ff_${f.key}" list="dl_${f.key}" value="${val}" placeholder="${f.placeholder||'Pick from the list or type a new one'}" autocomplete="off"><datalist id="dl_${f.key}">${dl.map(v=>`<option value="${escapeHtml(v)}">`).join('')}</datalist></div>`;
+    }
+    return `<div class="field${full}"><label>${f.label}</label><input id="ff_${f.key}" value="${val}" placeholder="${f.placeholder||''}"></div>`;
+  }).join('');
+}
+async function saveContact(id){
+  const category = document.getElementById('fCategory').value;
+  const cat = catByKey(category);
+  const data = { category, updatedAt: new Date().toISOString() };
+  COMMON_FIELDS.concat(cat.fields).forEach(f=>{
+    const el = document.getElementById('ff_'+f.key);
+    if(el) data[f.key] = el.value.trim();
+  });
+  if(!data.name){ toast('Please enter a name.'); return; }
+  cat.fields.forEach(f=>{ if(f.canon && data[f.key]){ const hit = fieldPool(cat, f).get(normalize(data[f.key])); if(hit) data[f.key] = hit; } });
+  const btn = document.getElementById('saveBtn'); btn.disabled = true; btn.textContent='Saving…';
+  try{
+    if(pendingPhotoFile && assetsCap){
+      const up = await assetsCap.upload(pendingPhotoFile);
+      data.photoUrl = up.url;
+    }
+    if(id){
+      await db.collection('contacts').doc(id).update(data);
+      logAudit('Updated contact: ' + data.name);
+    }else{
+      await db.collection('contacts').add({ ...data, createdAt: new Date().toISOString() });
+      logAudit('Added contact: ' + data.name);
+    }
+    closeModal();
+    toast(id?'Contact updated.':'Contact added.');
+  }catch(e){
+    toast('Could not save: ' + (e.message||e.code||'error'));
+    btn.disabled=false; btn.textContent = id?'Save changes':'Add contact';
+  }
+}
+function openCallSheet(number){
+  const digits = String(number).replace(/\D/g,'');
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = `<div class="modal-backdrop" id="callBackdrop">
+    <div class="confirm-box">
+      <p style="text-align:center;font-weight:700;">${escapeHtml(number)}</p>
+      <div class="row" style="flex-direction:column;gap:8px;">
+        <a class="btn btn-primary" style="width:100%;" href="tel:${escapeHtml(number)}" onclick="setTimeout(closeModal,150)">📞 Call</a>
+        <a class="btn btn-marigold" style="width:100%;" href="https://wa.me/${digits}" target="_blank" rel="noopener" onclick="setTimeout(closeModal,150)">💬 Call on WhatsApp</a>
+        <button class="btn btn-ghost" style="width:100%;" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('callBackdrop').addEventListener('click', e=>{ if(e.target.id==='callBackdrop') closeModal(); });
+}
+function customConfirm(message, yesLabel){
+  return new Promise(resolve=>{
+    const root = document.getElementById('modalRoot');
+    root.innerHTML = `<div class="modal-backdrop" id="cBackdrop">
+      <div class="confirm-box">
+        <p>${escapeHtml(message)}</p>
+        <div class="row">
+          <button class="btn btn-ghost" id="cNo">Cancel</button>
+          <button class="btn btn-marigold" id="cYes">${escapeHtml(yesLabel||'Delete')}</button>
+        </div>
+      </div>
+    </div>`;
+    const cleanup = (val)=>{ root.innerHTML=''; resolve(val); };
+    document.getElementById('cYes').addEventListener('click', ()=>cleanup(true));
+    document.getElementById('cNo').addEventListener('click', ()=>cleanup(false));
+    document.getElementById('cBackdrop').addEventListener('click', e=>{ if(e.target.id==='cBackdrop') cleanup(false); });
+  });
+}
+async function deleteContact(id){
+  const c = contactCache.find(x=>x.id===id);
+  // Native window.confirm() is silently ignored inside this artifact's sandboxed frame
+  // ("allow-modals" is not granted), so a custom in-page dialog is used instead.
+  const ok = await customConfirm('Delete '+(c?c.name:'this contact')+'? This cannot be undone.');
+  if(!ok) return;
+  try{
+    await db.collection('contacts').doc(id).delete();
+    logAudit('Deleted contact: ' + (c?c.name:id));
+    toast('Contact removed.');
+  }catch(e){ toast('Could not delete: '+e.message); }
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+
+/* =========================================================
+   AUDIT LOG (lightweight, best-effort)
+========================================================= */
+async function logAudit(action){
+  if(!db) return;
+  try{
+    let actorId = null;
+    actorId = fbAuth && fbAuth.currentUser ? fbAuth.currentUser.uid : null;
+    await db.collection('audit').add({ action, actorId: actorId||null, at: new Date().toISOString() });
+  }catch(e){ /* non-critical */ }
+}
+
+/* =========================================================
+   CSV TEMPLATE DOWNLOAD
+========================================================= */
+function csvEscape(v){ v = (v==null?'':String(v)); return /[",\n]/.test(v) ? '"'+v.replace(/"/g,'""')+'"' : v; }
+async function downloadTemplate(){
+  const cat = activeCategory ? catByKey(activeCategory) : null;
+  if(!cat){ toast('Select a category tab first, then download its template.'); return; }
+  const cols = templateColumns(cat);
+  const header = cols.map(c=>c.label).join(',');
+  const example = cols.map(c=> c.key==='name' ? 'Full Name' : (c.options ? c.options[0] : (c.base ? c.base[0] : ''))).join(',');
+  const csv = header + '\n' + example + '\n';
+  const filename = APP.fileStem + '_' + cat.code + '_template.csv';
+  downloadBlob(filename, csv);
+}
+
+/* =========================================================
+   CSV BULK UPLOAD
+========================================================= */
+function parseCsvLine(line){
+  const result = []; let cur='', inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(inQ){ if(ch==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else inQ=false; } else cur+=ch; }
+    else { if(ch==='"') inQ=true; else if(ch===','){ result.push(cur); cur=''; } else cur+=ch; }
+  }
+  result.push(cur); return result;
+}
+/* ---- column headings: "Department" matches "Department (optional)" ---- */
+function stripParen(s){ return String(s).replace(/\s*\([^)]*\)\s*/g,' ').replace(/\s+/g,' ').trim().toLowerCase(); }
+function buildHeaderMap(cols){
+  const m = {};
+  cols.forEach(c=>{ m[c.label.toLowerCase()] = c.key; });
+  cols.forEach(c=>{ const k = stripParen(c.label); if(!(k in m)) m[k] = c.key; });
+  return m;
+}
+function lookupHeader(m, h){ const t = String(h).trim().toLowerCase(); return m[t] || m[stripParen(h)]; }
+
+/* ---- reading CSV or Excel (.xlsx) into rows of strings ---- */
+async function inflateRaw(bytes){
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+async function unzip(buf){
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  let eocd = -1;
+  for(let i=u8.length-22; i>=Math.max(0,u8.length-65557); i--){ if(dv.getUint32(i,true)===0x06054b50){ eocd=i; break; } }
+  if(eocd<0) throw new Error('This does not look like a valid .xlsx file.');
+  const count = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true);
+  const files = {}; const dec = new TextDecoder();
+  for(let n=0;n<count;n++){
+    if(dv.getUint32(p,true)!==0x02014b50) break;
+    const method = dv.getUint16(p+10,true), csize = dv.getUint32(p+20,true);
+    const nl = dv.getUint16(p+28,true), el = dv.getUint16(p+30,true), cl = dv.getUint16(p+32,true), lho = dv.getUint32(p+42,true);
+    const name = dec.decode(u8.subarray(p+46, p+46+nl));
+    p += 46+nl+el+cl;
+    const start = lho+30+dv.getUint16(lho+26,true)+dv.getUint16(lho+28,true);
+    files[name] = { method, data: u8.subarray(start, start+csize) };
+  }
+  return files;
+}
+async function zipText(files, name){
+  const f = files[name]; if(!f) return null;
+  return new TextDecoder().decode(f.method===0 ? f.data : await inflateRaw(f.data));
+}
+async function parseXlsx(buf){
+  if(typeof DecompressionStream==='undefined') throw new Error('This browser cannot read .xlsx files — please save the sheet as CSV instead.');
+  const files = await unzip(buf);
+  const xml = s=>new DOMParser().parseFromString(s,'application/xml');
+  let sheetPath = 'xl/worksheets/sheet1.xml';
+  const wb = await zipText(files,'xl/workbook.xml'), rels = await zipText(files,'xl/_rels/workbook.xml.rels');
+  if(wb && rels){
+    const sh = xml(wb).getElementsByTagName('sheet')[0];
+    const rid = sh && (sh.getAttribute('r:id') || sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'));
+    const rel = [...xml(rels).getElementsByTagName('Relationship')].find(r=>r.getAttribute('Id')===rid);
+    if(rel){ const t = rel.getAttribute('Target'); sheetPath = t.startsWith('/') ? t.slice(1) : 'xl/'+t; }
+  }
+  const sst = []; const sstXml = await zipText(files,'xl/sharedStrings.xml');
+  if(sstXml) [...xml(sstXml).getElementsByTagName('si')].forEach(si=> sst.push([...si.getElementsByTagName('t')].map(t=>t.textContent).join('')));
+  const sheetXml = await zipText(files, sheetPath);
+  if(!sheetXml) throw new Error('Could not find the first worksheet in this file.');
+  const rows = [];
+  [...xml(sheetXml).getElementsByTagName('row')].forEach(r=>{
+    const arr = [];
+    [...r.getElementsByTagName('c')].forEach(c=>{
+      const letters = (c.getAttribute('r')||'').replace(/[0-9]/g,'');
+      let col = 0; for(const ch of letters) col = col*26 + (ch.charCodeAt(0)-64);
+      col -= 1; if(col<0) col = arr.length;
+      const t = c.getAttribute('t'), v = c.getElementsByTagName('v')[0];
+      let val = '';
+      if(t==='s' && v) val = sst[parseInt(v.textContent,10)] || '';
+      else if(t==='inlineStr') val = [...c.getElementsByTagName('t')].map(x=>x.textContent).join('');
+      else if(v){
+        val = v.textContent;
+        // large numbers (phone numbers typed as numbers) can come out in scientific notation
+        if(t!=='str' && t!=='b' && /e/i.test(val) && !isNaN(Number(val))) val = Number(val).toLocaleString('fullwide',{useGrouping:false,maximumFractionDigits:0});
+      }
+      arr[col] = String(val).trim();
+    });
+    for(let i=0;i<arr.length;i++) if(arr[i]===undefined) arr[i] = '';
+    rows.push(arr);
+  });
+  return rows.filter(r=>r.some(x=>String(x).trim()!==''));
+}
+async function readTable(file){
+  if(/\.xlsx$/i.test(file.name)) return await parseXlsx(await file.arrayBuffer());
+  let text = await file.text();
+  if(text.charCodeAt(0)===0xFEFF) text = text.slice(1);   // Excel's "CSV UTF-8" adds a BOM
+  return text.split(/\r?\n/).filter(l=>l.trim().length).map(parseCsvLine);
+}
+
+async function handleCsvUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  const cat = activeCategory ? catByKey(activeCategory) : null;
+  if(!cat){ toast('Select a category tab first, then bulk-upload its file.'); e.target.value=''; return; }
+  let rows;
+  try{ rows = await readTable(file); }catch(err){ toast(err.message||'Could not read the file.'); e.target.value=''; return; }
+  if(rows.length<2){ toast('No data rows found in file.'); e.target.value=''; return; }
+  const cols = templateColumns(cat);
+  const headerMap = buildHeaderMap(cols);
+  const headers = rows[0].map(h=>String(h).trim().toLowerCase());
+  const unknownCols = headers.filter(h=>h && !lookupHeader(headerMap,h));
+  const parsedRows = [];
+  for(let i=1;i<rows.length;i++){
+    const vals = rows[i];
+    const row = {};
+    headers.forEach((h,idx)=>{ const key = lookupHeader(headerMap,h); if(key) row[key] = String(vals[idx]==null?'':vals[idx]).trim(); });
+    if(row.name) parsedRows.push(row);
+  }
+  if(!parsedRows.length){ toast('No valid rows found (each row needs at least a Name, and the column headings must match the template).'); e.target.value=''; return; }
+
+  // ---- tidy values so filters never split on spelling: fixed lists are enforced, others reuse the existing spelling ----
+  const pools = {}; cat.fields.forEach(f=>{ if(f.canon || (f.options && f.fixed)) pools[f.key] = fieldPool(cat, f); });
+  const problems = [], newStrict = {}; const valid = [];
+  parsedRows.forEach(row=>{
+    let bad = false;
+    cat.fields.forEach(f=>{
+      const v = row[f.key]; if(!v) return;
+      if(f.options && f.fixed){
+        const hit = f.options.find(o=>normalize(o)===normalize(v));
+        if(hit) row[f.key] = hit; else { bad = true; problems.push(`${row.name}: ${f.label} “${v}” is not one of ${f.options.join(' / ')}`); }
+      }else if(f.canon){
+        const hit = pools[f.key].get(normalize(v));
+        if(hit) row[f.key] = hit;
+        else{
+          if(f.strict){ (newStrict[f.label] = newStrict[f.label]||new Map()).set(normalize(v), v); }
+          pools[f.key].set(normalize(v), v);   // later rows in this file reuse this spelling
+        }
+      }
+    });
+    if(!bad) valid.push(row);
+  });
+  const notes = [];
+  Object.keys(newStrict).forEach(l=> notes.push(`New ${l} name(s) not in the list yet: ${[...newStrict[l].values()].join(', ')} — they will be added as new.`));
+  if(problems.length) notes.push(`${problems.length} row(s) will be skipped — ${problems.slice(0,3).join('; ')}${problems.length>3?'; …':''}.`);
+  if(notes.length){
+    const go = await customConfirm(notes.join(' ') + ' Continue with the upload?', 'Continue');
+    if(!go){ toast('Upload cancelled — nothing was changed.'); e.target.value=''; return; }
+  }
+  parsedRows.length = 0; valid.forEach(r=>parsedRows.push(r));
+  if(!parsedRows.length){ toast('No valid rows left to import.'); e.target.value=''; return; }
+  toast('Importing ' + parsedRows.length + ' row(s)…');
+  const existing = contactCache.filter(c=>c.category===cat.key);
+  const existingByName = new Map(existing.map(c=>[normalize(c.name), c.id]));
+  let added=0, updated=0, failed=0;
+  const now = new Date().toISOString();
+  for(const row of parsedRows){
+    const key = normalize(row.name);
+    try{
+      if(existingByName.has(key)){
+        await db.collection('contacts').doc(existingByName.get(key)).update({ ...row, category: cat.key, updatedAt: now });
+        updated++;
+      }else{
+        const r = await db.collection('contacts').add({ ...row, category: cat.key, createdAt: now, updatedAt: now });
+        existingByName.set(key, r.id);
+        added++;
+      }
+    }catch(err){ failed++; }
+  }
+  logAudit(`Bulk import (${cat.label}): ${added} added, ${updated} updated, ${failed} failed`);
+  toast(`${added} added, ${updated} updated${problems.length?', '+problems.length+' skipped':''}${failed?', '+failed+' failed':''}${unknownCols.length?` · ignored unknown column(s): ${unknownCols.join(', ')}`:''}.`);
+  e.target.value='';
+}
+
+/* =========================================================
+   EXPORT CSV
+========================================================= */
+async function exportCsv(){
+  const rows = contactCache.filter(matchesFilters);
+  if(!rows.length){ toast('Nothing to export.'); return; }
+  const allCols = ['category',...COMMON_FIELDS.map(f=>f.key)];
+  const specific = new Set();
+  rows.forEach(r=>{ const cat=catByKey(r.category); if(cat) cat.fields.forEach(f=>specific.add(f.key)); });
+  const cols = allCols.concat([...specific]);
+  const header = cols.join(',');
+  const body = rows.map(r=> cols.map(c=> csvEscape(r[c])).join(',')).join('\n');
+  const csv = header + '\n' + body + '\n';
+  downloadBlob(APP.fileStem + '_export.csv', csv);
+}
+
+
+/* =========================================================
+   EXPORT TO PHONE CONTACTS (.vcf / vCard 3.0)
+   Exports whatever is currently shown (category tab + search + filters),
+   so "All" exports everything. Name + role in the display name and the
+   photo are embedded so the phone shows them on an incoming call.
+========================================================= */
+function vcfEscape(v){
+  return String(v==null?'':v).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+}
+function vcfFold(line){
+  // RFC 6350: lines are folded at 75 characters; continuation lines start with a space
+  if(line.length<=74) return line;
+  const parts=[line.slice(0,74)];
+  for(let i=74;i<line.length;i+=73) parts.push(' '+line.slice(i,i+73));
+  return parts.join('\r\n');
+}
+function vcfPhone(raw){
+  if(!raw) return '';
+  let d=String(raw).trim();
+  const plus=d.startsWith('+');
+  d=d.replace(/\D/g,'');
+  if(!d) return '';
+  if(plus) return '+'+d;
+  if(d.length===10) return '+91'+d;
+  if(d.length===11 && d.startsWith('0')) return '+91'+d.slice(1);
+  if(d.length===12 && d.startsWith('91')) return '+'+d;
+  return d; // landline / unusual format: leave as typed digits
+}
+function buildVcard(c, includeNotes){
+  const phones = [vcfPhone(c.primaryMobile), vcfPhone(c.altMobile)].filter(Boolean);
+  if(!phones.length) return null; // nothing to show a caller ID for
+  const role = (typeof roleLine==='function') ? roleLine(c) : '';
+  const display = (c.name||'').trim() + (role ? ' ('+role+')' : '');
+  const cat = catByKey(c.category);
+  const L = [];
+  L.push('BEGIN:VCARD','VERSION:3.0');
+  L.push('N:'+vcfEscape(display)+';;;;');
+  L.push('FN:'+vcfEscape(display));
+  L.push('ORG:'+vcfEscape(cat ? cat.label : APP.title));
+  if(role) L.push('TITLE:'+vcfEscape(role));
+  if(phones[0]) L.push('TEL;TYPE=CELL,VOICE,PREF:'+phones[0]);
+  if(phones[1]) L.push('TEL;TYPE=CELL,VOICE:'+phones[1]);
+  if(c.email) L.push('EMAIL;TYPE=INTERNET:'+vcfEscape(c.email));
+  if(c.officeAddress) L.push('ADR;TYPE=WORK:;;'+vcfEscape(c.officeAddress)+';;;;');
+  if(includeNotes && c.notes) L.push('NOTE:'+vcfEscape(c.notes));
+  const m = /^data:image\/(jpeg|png);base64,(.+)$/.exec(c.photoUrl||'');
+  if(m) L.push('PHOTO;ENCODING=b;TYPE='+(m[1]==='png'?'PNG':'JPEG')+':'+m[2]);
+  L.push('END:VCARD');
+  return L.map(vcfFold).join('\r\n');
+}
+function exportVcf(){
+  const n = contactCache.filter(matchesFilters).length;
+  if(!n){ toast('Nothing to export.'); return; }
+  document.getElementById('modalRoot').innerHTML = `<div class="modal-backdrop" id="vBackdrop">
+    <div class="confirm-box">
+      <p style="font-weight:700;">Export ${n} contact${n===1?'':'s'} to phone contacts</p>
+      <p class="small">Exports what is currently shown (tab, search and filters). Each entry is saved as “Name (Role)” with its mobile numbers and photo. Contacts without a mobile number are skipped, and a number shared by several records is exported once.</p>
+      <label class="small" style="display:flex;gap:8px;align-items:center;margin-bottom:14px;"><input type="checkbox" id="vcfNotes"> Include Notes in the phone entries</label>
+      <div class="row">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="vcfGo">Export</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('vcfGo').addEventListener('click', ()=> runVcfExport(document.getElementById('vcfNotes').checked));
+  document.getElementById('vBackdrop').addEventListener('click', e=>{ if(e.target.id==='vBackdrop') closeModal(); });
+}
+function runVcfExport(includeNotes){
+  closeModal();
+  const rows = contactCache.filter(matchesFilters).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  const cards = []; const seen = new Set(); let skipped=0, dup=0, withPhoto=0;
+  rows.forEach(c=>{
+    const key = vcfPhone(c.primaryMobile) || vcfPhone(c.altMobile);
+    if(key && seen.has(key)){ dup++; return; }
+    const v = buildVcard(c, includeNotes);
+    if(v){ seen.add(key); cards.push(v); if(c.photoUrl) withPhoto++; } else skipped++;
+  });
+  if(!cards.length){ toast('No contacts with a mobile number to export.'); return; }
+  downloadBlob(APP.fileStem + '.vcf', cards.join('\r\n')+'\r\n', 'text/vcard;charset=utf-8;');
+  toast(`Exported ${cards.length} contact(s), ${withPhoto} with photo${skipped?` · ${skipped} skipped (no mobile)`:''}${dup?` · ${dup} duplicate number(s) merged`:''}.`);
+}
+
+/* =========================================================
+   BACKUP & RESTORE (one JSON file: every record + photos + ULB mapping)
+========================================================= */
+function exportBackup(){
+  const payload = { app: APP.key, version: 1, exportedAt: new Date().toISOString(), contacts: allDocsCache, ulbmap: FEATURES.ulbMap ? ulbMapCache : [] };
+  downloadBlob(`${APP.fileStem}_backup_${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(payload), 'application/json');
+  toast(`Backup saved: ${allDocsCache.length} contact record(s)${FEATURES.ulbMap?`, ${ulbMapCache.length} ULB mapping row(s)`:''}.`);
+}
+async function handleRestore(e){
+  const file = e.target.files[0]; if(!file) return;
+  e.target.value = '';
+  let data;
+  try{ data = JSON.parse(await file.text()); }catch(err){ toast('That file is not a valid backup.'); return; }
+  if(!data || !Array.isArray(data.contacts)){ toast('That file is not a valid backup.'); return; }
+  const usable = data.contacts.filter(c=>c && c.id && catByKey(c.category));
+  const skipped = data.contacts.length - usable.length;
+  const maps = (FEATURES.ulbMap && Array.isArray(data.ulbmap)) ? data.ulbmap.filter(m=>m && m.id) : [];
+  const ok = await customConfirm(`Restore ${usable.length} contact(s)${maps.length?` and ${maps.length} ULB mapping row(s)`:''} from this backup? Records with the same ID are overwritten; nothing is deleted.${skipped?` (${skipped} record(s) belong to categories this app doesn't have and will be skipped.)`:''}`, 'Restore');
+  if(!ok) return;
+  toast('Restoring…');
+  let done=0, failed=0;
+  for(const c of usable){ const {id, ...rest} = c; try{ await db.collection('contacts').doc(id).set(rest); done++; }catch(err){ failed++; } }
+  for(const m of maps){ const {id, ...rest} = m; try{ await db.collection('ulbmap').doc(id).set(rest); done++; }catch(err){ failed++; } }
+  logAudit(`Restored backup: ${done} record(s), ${failed} failed`);
+  toast(`Restored ${done} record(s)${failed?`, ${failed} failed`:''}${skipped?`, ${skipped} skipped`:''}.`);
+}
+
+/* =========================================================
+   BULK PHOTO UPLOAD (naming-convention matching)
+========================================================= */
+// Standard photo name:  CODE_MOBILE.jpg   e.g.  MLA_9876543210.jpg
+// (also accepted: a bare 10-digit mobile  9876543210.jpg, or the older  CODE_<identifier>.jpg style)
+function digits10(raw){ const d = String(raw||'').replace(/\D/g,''); return d.length>10 ? d.slice(-10) : d; }
+function parsePhotoFilename(filename){
+  const base = filename.replace(/\.[^.]+$/, '').trim();
+  const idx = base.indexOf('_');
+  if(idx<0) return { code:'', ident: base };
+  return { code: base.slice(0,idx), ident: base.slice(idx+1) };
+}
+function photoFileName(c){
+  const cat = catByKey(c.category); if(!cat) return '';
+  const m = digits10(c.primaryMobile) || digits10(c.altMobile);
+  return m ? `${cat.code}_${m}.jpg` : '';
+}
+function legacyPhotoName(c){
+  const cat = catByKey(c.category); if(!cat) return '';
+  const v = String(c[cat.idField]||'').trim().replace(/[^A-Za-z0-9]+/g,'_').replace(/^_|_$/g,'');
+  return v ? `${cat.code}_${v}.jpg` : '';
+}
+function exportPhotoNames(){
+  const rows = contactCache.filter(matchesFilters).sort((a,b)=>(a.category||'').localeCompare(b.category||'') || (a.name||'').localeCompare(b.name||''));
+  if(!rows.length){ toast('Nothing to list.'); return; }
+  const header = ['Category','Name','Primary Mobile','Photo file name (use this)','Older-style name (also works)'];
+  const body = rows.map(c=>{
+    const cat = catByKey(c.category);
+    const std = photoFileName(c);
+    return [cat?cat.label:c.category, c.name, c.primaryMobile||'', std || '(add a mobile number first)', legacyPhotoName(c)].map(csvEscape).join(',');
+  });
+  downloadBlob(APP.fileStem + '_photo_file_names.csv', header.join(',')+'\n'+body.join('\n')+'\n');
+}
+async function handlePhotoFiles(e){
+  const files = Array.from(e.target.files||[]);
+  if(!files.length) return;
+  const panel = document.getElementById('bulkPhotoPanel');
+  panel.classList.remove('hidden');
+  panel.innerHTML = '<div class="small">Matching ' + files.length + ' file(s) against the naming convention (CODE_MobileNumber.jpg)…</div>';
+  const matched = [], unmatched = [];
+  for(const f of files){
+    const parsed = parsePhotoFilename(f.name);
+    const cat = parsed.code ? catByCode(parsed.code) : null;
+    const identTxt = String(parsed.ident).trim();
+    const identDigits = identTxt.replace(/\D/g,'');
+    const looksLikeMobile = /^[+\d][\d\s\-+()]*$/.test(identTxt) && identDigits.length>=10;
+    if(looksLikeMobile){
+      const want = digits10(identDigits);
+      let pool = contactCache.filter(c=>(!cat || c.category===cat.key) && (digits10(c.primaryMobile)===want || digits10(c.altMobile)===want));
+      if(pool.length && typeof dedupeKey==='function'){   // the same person recorded under another tab gets the photo too
+        const keys = new Set(pool.map(dedupeKey).filter(Boolean));
+        pool = contactCache.filter(c=> pool.includes(c) || keys.has(dedupeKey(c)));
+      }
+
+      if(pool.length) matched.push({file:f, cat, contacts:pool});
+      else unmatched.push({file:f, cat, reason:'No contact with mobile ' + want + (cat ? ' in ' + cat.label : '')});
+      continue;
+    }
+    if(!cat){ unmatched.push({file:f, reason:'Name not recognised — use CODE_MobileNumber.jpg (see "Photo names")'}); continue; }
+    const wantIdent = normalize(identTxt);
+    const candidates = contactCache.filter(c=> c.category===cat.key && normalize(c[cat.idField])===wantIdent);
+    if(candidates.length===1) matched.push({file:f, cat, contacts:candidates});
+    else if(candidates.length===0) unmatched.push({file:f, cat, reason:'No contact found with ' + cat.idLabel + ' = "' + identTxt.replace(/_/g,' ') + '"'});
+    else unmatched.push({file:f, cat, reason:'Several contacts share that ' + cat.idLabel + ' — rename the file using the mobile number, or pick one below'});
+  }
+  let ok=0; window._touched = 0;
+  const now = new Date().toISOString();
+  for(const m of matched){
+    try{
+      const up = await assetsCap.upload(m.file);
+      for(const c of m.contacts){
+        await db.collection('contacts').doc(c.id).update({ photoUrl: up.url, updatedAt: now });
+        window._touched++;
+      }
+      ok++;
+    }catch(err){ unmatched.push({file:m.file, cat:m.cat, reason:'Upload failed: '+(err.message||err.code)}); }
+  }
+  logAudit(`Bulk photo upload: ${ok} attached, ${unmatched.length} need attention`);
+  renderPhotoReport(ok, unmatched);
+  e.target.value = '';
+}
+function renderPhotoReport(ok, unmatched){
+  const panel = document.getElementById('bulkPhotoPanel');
+  let html = `<div class="section-title" style="margin-top:0">Bulk photo upload result</div>
+    <p class="small">${ok} photo file(s) matched and attached automatically${(window._touched>ok)?` (to ${window._touched} contacts — a number shared by several records goes to all of them)`:''}.</p>`;
+  if(unmatched.length){
+    html += `<div class="table-scroll"><table class="rep"><thead><tr><th>File</th><th>Issue</th><th>Assign manually</th></tr></thead><tbody>`;
+    unmatched.forEach((u,i)=>{
+      const catOptions = CATEGORIES.map(c=>`<option value="${c.key}" ${u.cat&&u.cat.key===c.key?'selected':''}>${c.label}</option>`).join('');
+      html += `<tr>
+        <td>${escapeHtml(u.file.name)}</td>
+        <td>${escapeHtml(u.reason)}</td>
+        <td>
+          <select id="uc_${i}" onchange="fillManualContacts(${i})">${catOptions}</select>
+          <select id="up_${i}"></select>
+          <button class="btn btn-ghost btn-sm" onclick="manualAttach(${i})">Attach</button>
+        </td>
+      </tr>`;
+    });
+    html += `</tbody></table></div>`;
+  }
+  html += `<div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('bulkPhotoPanel').classList.add('hidden')">Close</button></div>`;
+  panel.innerHTML = html;
+  window._pendingPhotoFiles = unmatched;
+  unmatched.forEach((u,i)=> fillManualContacts(i));
+}
+function fillManualContacts(i){
+  const catKey = document.getElementById('uc_'+i).value;
+  const sel = document.getElementById('up_'+i);
+  const opts = contactCache.filter(c=>c.category===catKey).sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  sel.innerHTML = opts.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+}
+async function manualAttach(i){
+  const entry = window._pendingPhotoFiles[i];
+  const contactId = document.getElementById('up_'+i).value;
+  if(!contactId){ toast('No contact selected.'); return; }
+  try{
+    const up = await assetsCap.upload(entry.file);
+    await db.collection('contacts').doc(contactId).update({ photoUrl: up.url, updatedAt: new Date().toISOString() });
+    logAudit('Manually attached photo: ' + entry.file.name);
+    toast('Photo attached.');
+    document.querySelectorAll('table.rep tr')[i+1] && (document.querySelectorAll('table.rep tr')[i+1].style.opacity='.4');
+  }catch(err){ toast('Could not attach: ' + (err.message||err.code)); }
+}
+
+/* =========================================================
+   WIRE UP
+========================================================= */
+document.getElementById('search').addEventListener('input', renderGrid);
+document.getElementById('addBtn').addEventListener('click', ()=> openContactModal(null));
+document.getElementById('templateBtn').addEventListener('click', downloadTemplate);
+document.getElementById('bulkCsvBtn').addEventListener('click', ()=> document.getElementById('csvFile').click());
+document.getElementById('csvFile').addEventListener('change', handleCsvUpload);
+document.getElementById('bulkPhotoBtn').addEventListener('click', ()=> document.getElementById('photoFiles').click());
+document.getElementById('photoFiles').addEventListener('change', handlePhotoFiles);
+document.getElementById('photoNamesBtn').addEventListener('click', exportPhotoNames);
+document.getElementById('exportBtn').addEventListener('click', exportCsv);
+document.getElementById('vcfBtn').addEventListener('click', exportVcf);
+document.getElementById('backupBtn').addEventListener('click', exportBackup);
+document.getElementById('restoreBtn').addEventListener('click', ()=> document.getElementById('restoreFile').click());
+document.getElementById('restoreFile').addEventListener('change', handleRestore);
+document.getElementById('manageUlbMapBtn').addEventListener('click', openUlbMapManager);
+document.getElementById('ulbMapCsvFile').addEventListener('change', handleUlbMapCsvUpload);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+}
+
+initCapabilities();
+
+</script>
+</body>
+</html>
